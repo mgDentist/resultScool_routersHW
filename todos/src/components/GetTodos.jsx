@@ -1,4 +1,5 @@
 import { useEffect, useState } from "react";
+import { useNavigate } from "react-router-dom"; 
 import style from "../App.module.css"
 
 export const GetTodos = () => {
@@ -16,6 +17,12 @@ export const GetTodos = () => {
             .then((data) => setTodos(data))
             .catch((error) => console.error("Ошибка получения данных: ", error));
     }, []);
+
+    const navigate = useNavigate();
+
+    const openTaskDetails = (taskId) => {
+        navigate(`task/${taskId}`);
+    };
 
     const addTodo = () => {
         fetch("http://localhost:3001/todos", {
@@ -78,7 +85,6 @@ export const GetTodos = () => {
 
     return (
         <>
-            <h1>Список дел</h1>
             <button
                 className={style.todoListItemButton}
                 onClick={toggleSorting}>
@@ -97,9 +103,10 @@ export const GetTodos = () => {
             <ul className={style.todoList}>
                 {sortedTodos.map((todo) => (
                     <li
-                        className={`${style.todoListItem} ${todo.title.includes(searchQuery) && searchQuery !== "" ? style.highlight : ""
+                        className={`${style.todoListItem} ${todo.title && todo.title.includes(searchQuery) && searchQuery !== "" ? style.highlight : ""
                             }`}
                         key={todo.id}
+                        onClick={() => openTaskDetails(todo.id)}
                     >
                         {editingTodo === todo.id ? (
                             <div>
@@ -119,7 +126,9 @@ export const GetTodos = () => {
                             </div>
                         ) : (
                             <div className={style.wrapper}>
-                                {todo.title}
+                                <div className={style.todoListItemText}>
+                                    {todo.title}
+                                </div>
                                 <div className={style.innerWrapper}>
                                     <button
                                         className={style.todoListItemButton}

@@ -37,6 +37,14 @@
   color: white;
 }
 
+.todoListItemText {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  max-width: 400px;
+}
+
+
 .wrapper {
   display: flex;
   align-items: center;
