@@ -1,14 +1,8 @@
 import { BrowserRouter as Router, Route, Routes } from "react-router-dom";
-import { GetTodos } from "./components/GetTodos";
 import { TaskDetails } from "./components/TaskDetails";
 import style from "./App.module.css";
-
-const TaskList = () => (
-  <div>
-    <h1>Список дел</h1>
-    <GetTodos />
-  </div>
-);
+import TaskList from "./components/TaskList";
+import NotFound from "./components/NotFound";
 
 const App = () => {
   return (
@@ -18,6 +12,7 @@ const App = () => {
           <Routes>
             <Route path="/" element={<TaskList/>} />
             <Route path="task/:taskId" element={<TaskDetails />} />
+            <Route path="*" element={<NotFound />} />
           </Routes>
         </header>
       </div>

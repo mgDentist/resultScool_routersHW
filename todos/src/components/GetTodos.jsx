@@ -1,15 +1,12 @@
 import { useEffect, useState } from "react";
-import { useNavigate } from "react-router-dom"; 
-import style from "../App.module.css"
+import { useNavigate } from "react-router-dom";
+import style from "../App.module.css";
 
 export const GetTodos = () => {
     const [todos, setTodos] = useState([]);
     const [newTodo, setNewTodo] = useState("");
-    const [editingTodo, setEditingTodo] = useState(null);
-    const [editedTodos, setEditedTodos] = useState({});
     const [searchQuery, setSearchQuery] = useState("");
     const [isSorted, setIsSorted] = useState(false);
-
 
     useEffect(() => {
         fetch("http://localhost:3001/todos")
@@ -38,37 +35,6 @@ export const GetTodos = () => {
                 setNewTodo("");
             })
             .catch((error) => console.error("Ошибка добавления данных: ", error));
-    };
-
-    const editTodo = (id, title) => {
-        fetch(`http://localhost:3001/todos/${id}`, {
-            method: "PUT",
-            headers: {
-                "Content-Type": "application/json",
-            },
-            body: JSON.stringify({ title: editedTodos[id] }),
-        })
-            .then(() => {
-                const updatedTodos = todos.map((todo) => {
-                    if (todo.id === id) {
-                        todo.title = editedTodos[id];
-                    }
-                    return todo;
-                });
-                setTodos(updatedTodos);
-            })
-            .catch((error) => console.error("Ошибка редактирования данных: ", error));
-        setEditingTodo(null);
-    };
-
-    const deleteTodo = (id) => {
-        fetch(`http://localhost:3001/todos/${id}`, {
-            method: "DELETE",
-        })
-            .then(() => {
-                setTodos(todos.filter((todo) => todo.id !== id));
-            })
-            .catch((error) => console.error("Ошибка удаления данных: ", error));
     };
 
     const handleSearch = (query) => {
@@ -108,37 +74,11 @@ export const GetTodos = () => {
                         key={todo.id}
                         onClick={() => openTaskDetails(todo.id)}
                     >
-                        {editingTodo === todo.id ? (
-                            <div>
-                                <input
-                                    className={style.todoListItemInput}
-                                    type="text"
-                                    value={editedTodos[todo.id] || todo.title}
-                                    onChange={(e) => {
-                                        const newEditedTodos = { ...editedTodos };
-                                        newEditedTodos[todo.id] = e.target.value;
-                                        setEditedTodos(newEditedTodos);
-                                    }}
-                                />
-                                <button onClick={() => editTodo(todo.id)}>
-                                    Ок
-                                </button>
+                        <div className={style.wrapper}>
+                            <div className={style.todoListItemText}>
+                                {todo.title}
                             </div>
-                        ) : (
-                            <div className={style.wrapper}>
-                                <div className={style.todoListItemText}>
-                                    {todo.title}
-                                </div>
-                                <div className={style.innerWrapper}>
-                                    <button
-                                        className={style.todoListItemButton}
-                                        onClick={() => setEditingTodo(todo.id)}>Редактировать</button>
-                                    <button
-                                        className={style.todoListItemButton}
-                                        onClick={() => deleteTodo(todo.id)}>Удалить</button>
-                                </div>
-                            </div>
-                        )}
+                        </div>
                     </li>
                 ))}
             </ul>
